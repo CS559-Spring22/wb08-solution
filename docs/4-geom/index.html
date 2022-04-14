@@ -19,7 +19,9 @@
         
         
         
-		<div class="content post__content clearfix"><p>This is an &ldquo;extra&rdquo; page (which is why it has a weird number) that explains how texture coordinates work for old-style THREE <code>Geometry</code>. It connects to the discussion <a href="../../docs/4/">Page &nbsp;4&nbsp; (Textures in THREE)</a></p>
+		<div class="content post__content clearfix"><div class="dimbox">
+                    <h3>CS559 Spring 2022 Sample Solution</h3>
+                </div><p>This is an &ldquo;extra&rdquo; page (which is why it has a weird number) that explains how texture coordinates work for old-style THREE <code>Geometry</code>. It connects to the discussion <a href="../../docs/4/">Page &nbsp;4&nbsp; (Textures in THREE)</a></p>
 <h1 id="texture-coordinates-for-geometry">Texture Coordinates for Geometry</h1>
 <p>Just like with colors and normals, a vertex may be &ldquo;split&rdquo; so that it has a different texture coordinate for each face it is part of. However, unlike colors and normals, the texture coordinates are not part of the <code>Face3</code> data structures.</p>
 <p>Texture coordinates must be provided as an array of arrays of arrays of vectors. The <code>faceVertexUvs</code> property of a <code>Geometry</code> has type <code>Vector2[][][]</code>. It is triple nested because:</p>

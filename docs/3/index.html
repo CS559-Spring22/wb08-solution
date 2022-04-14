@@ -19,7 +19,9 @@
         
         
         
-		<div class="content post__content clearfix"><p>This page are some notes about texturing. The notes are meant to remind you about what you&rsquo;ve learned in class and point you towards resources to learn more from. This is not a texture tutorial.</p>
+		<div class="content post__content clearfix"><div class="dimbox">
+                    <h3>CS559 Spring 2022 Sample Solution</h3>
+                </div><p>This page are some notes about texturing. The notes are meant to remind you about what you&rsquo;ve learned in class and point you towards resources to learn more from. This is not a texture tutorial.</p>
 <h2 id="the-big-picture">The Big Picture</h2>
 <p>Texturing is a way to add details to a scene without making the geometry more complex. Effectively, it provides a way to make a decision about appearance for every pixel on the screen - without having to make triangles that are pixel-sized.</p>
 <p>The obvious catch is that we can&rsquo;t know the pixels ahead of time: a triangle may be big or small on the screen. We need to define the textures in a way that is independent of the actual pixels, and then compute the texture for each pixel.</p>

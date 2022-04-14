@@ -1,20 +1,6 @@
 /*jshint esversion: 6 */
 // @ts-check
 
-/**
- * Draw Two Triangles - but set the normals in different ways
- * 
- * Only "old-style" Geometry has face normals (so we do that)
- * 
- * For BufferGeometry we show things with Vertex normals (split)
- * For smooth normals, we do it with both split (just happens to be the same)
- * as well as shared (so they can be computed)
- * 
- * We keep the "old" Geometry since we have nice ways to show the vertices
- * We also put the "new" Buffer Geometry in the background, so you can look
- * at the code.
- */
-
 import * as T from "../libs/CS559-Three/build/three.module.js";
 import { GrWorld } from "../libs/CS559-Framework/GrWorld.js";
 import { GrObject } from "../libs/CS559-Framework/GrObject.js";
@@ -25,10 +11,6 @@ import {TextGeometry} from "../libs/CS559-Three/examples/jsm/geometries/TextGeom
 
 const s2 = Math.sqrt(2) / 2;
 
-/**
- * Face normals - only works with old-fashioned Geometry
- * since only old-fashioned geometry has Face normals
- */
 class TwoTriangles extends GrObject {
   constructor() {
     let geometry = new Geom.Geometry();
@@ -56,10 +38,6 @@ class TwoTriangles extends GrObject {
   }
 }
 
-/**
- * flat triangles (face normals) - implemented by splitting vertices
- * since that's what we have to do with buffer geometry.
- */
 class TwoNormalTriangles extends GrObject {
   constructor() {
     let geometry = new Geom.Geometry();
@@ -92,52 +70,6 @@ class TwoNormalTriangles extends GrObject {
   }
 }
 
-class TwoNormalTrianglesBG extends GrObject {
-    constructor() {
-      let geometry = new T.BufferGeometry();
-      //
-      // while the two triangles have 4 certices, we need to split the vertices
-      // so that they can have different normals
-      const vertices = new Float32Array( [
-         -1, 1, -1,     // 1A note that we need to keep this ccw
-         0, 0, 0,       // 1B
-         0, 2, 0,       // 1C
-         
-         1, 1, -1,      // second triangle
-         0, 2, 0,       // 2B
-         0, 0, 0        // 2C
-      ]);
-      // don't ask where we learn to call this "position" and "normal"
-      // the only thing I can find is to read examples...
-      geometry.setAttribute('position',new T.BufferAttribute(vertices,3));
-      // in 01, we computed these with cross product, here, we use them
-      // from the way it was done above
-      const normals = new Float32Array([
-            -s2,0,s2,
-            -s2,0,s2,
-            -s2,0,s2,
-            s2,0,s2,
-            s2,0,s2,
-            s2,0,s2
-        ]);
-      geometry.setAttribute("normal",new T.BufferAttribute(normals,3));
-
-      let material = new T.MeshStandardMaterial({
-        color: "yellow",
-        roughness: 0.75
-      });
-
-      let mesh = new T.Mesh(geometry, material);
-  
-      //
-      super("TwoNormalTrianglesBG", mesh);
-    }
-  }
-
-
-/**
- * Smooth triangles (manually setting the directions)
- */
 class TwoSmoothTriangles extends GrObject {
   constructor() {
     let geometry = new Geom.Geometry();
@@ -169,94 +101,6 @@ class TwoSmoothTriangles extends GrObject {
     super("TwoTriangles3", group);
   }
 }
-/**
- * Here we are doing vertex sharing, just to keep the code symmetric
- */
-class TwoSmoothTrianglesBG extends GrObject {
-    constructor() {
-      let geometry = new T.BufferGeometry();
-      //
-      // while the two triangles have 4 certices, we need to split the vertices
-      // so that they can have different normals
-      const vertices = new Float32Array( [
-         -1, 1, -1,     // 1A note that we need to keep this ccw
-         0, 0, 0,       // 1B
-         0, 2, 0,       // 1C
-         
-         1, 1, -1,      // second triangle
-         0, 2, 0,       // 2B
-         0, 0, 0        // 2C
-      ]);
-      // don't ask where we learn to call this "position" and "normal"
-      // the only thing I can find is to read examples...
-      geometry.setAttribute('position',new T.BufferAttribute(vertices,3));
-      // in 01, we computed these with cross product, here, we use them
-      // from the way it was done above
-      const normals = new Float32Array([
-            -s2,0,s2,
-            0,0,1,
-            0,0,1,
-            s2,0,s2,
-            0,0,1,
-            0,0,1
-        ]);
-      geometry.setAttribute("normal",new T.BufferAttribute(normals,3));
-
-      let material = new T.MeshStandardMaterial({
-        color: "yellow",
-        roughness: 0.75
-      });
-
-      let mesh = new T.Mesh(geometry, material);
-  
-      //
-      super("TwoNormalTrianglesBG", mesh);
-    }
-  }
-
-/**
- * here we do it with 4 vertices - which requires using indecies
- */
-class TwoSmoothTriangleShared extends GrObject {
-    constructor() {
-        let geometry = new T.BufferGeometry();
-        //
-        // while the two triangles have 4 certices, we need to split the vertices
-        // so that they can have different normals
-        const vertices = new Float32Array( [
-            -1, 1, -1,     // 1A note that we need to keep this ccw
-            0, 0, 0,       // 1B
-            0, 2, 0,       // 1C
-            1, 1, -1,      // second triangle
-        ]);
-        // don't ask where we learn to call this "position" and "normal"
-        // the only thing I can find is to read examples...
-        geometry.setAttribute('position',new T.BufferAttribute(vertices,3));
-        // in 01, we computed these with cross product, here, we use them
-        // from the way it was done above
-        const normals = new Float32Array([
-            -s2,0,s2,
-            0,0,1,
-            0,0,1,
-            s2,0,s2
-        ]);
-        geometry.setAttribute("normal",new T.BufferAttribute(normals,3));
-
-        // set the indecies - our triangles are 0 1 2 and 3,2,1
-        geometry.setIndex([0,1,2, 3,2,1]);
-
-        let material = new T.MeshStandardMaterial({
-        color: "yellow",
-        roughness: 0.75
-        });
-
-        let mesh = new T.Mesh(geometry, material);
-
-        //
-        super("TwoNormalTrianglesBG", mesh);
-    }
-}
-
 
 // Helper to draw arrow (cylinder + cone) from (x0, y0, z0) to (x1, y1, z1).
 function draw_arrow(x0 = 0, y0 = 0, z0 = 0, x1 = 1, y1 = 1, z1 = 1, param = { color: "red", thickness: 0.02, scale: 1 }) {
@@ -342,14 +186,17 @@ InputHelpers.makeHead("Three Different Normals (computed, face, vertex)",box);
 
 let world = new GrWorld({ width: mydiv ? 600 : 800, where: box });
 
-let tt = shift(new TwoTriangles(), -4, 0.2, 0);
+let tt = shift(new TwoTriangles(), -3, 0.2, -1);
 world.add(tt);
+// new AutoUI(tt);
 
 let t2 = shift(new TwoNormalTriangles(), 0, 0.2, 0);
 world.add(t2);
+// new AutoUI(t2);
 
-let t3 = shift(new TwoSmoothTriangles(), 4, 0.2, 0);
+let t3 = shift(new TwoSmoothTriangles(), 3, 0.2, -1);
 world.add(t3);
+// new AutoUI(t3);
 
 let div = InputHelpers.makeBoxDiv({}, box);
 

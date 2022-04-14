@@ -9,129 +9,104 @@ import * as Geom from "../libs/CS559-Three/examples/jsm/deprecated/Geometry.js";
 
 const s2 = Math.sqrt(2) / 2;
 
-class TwoTrianglesBG extends GrObject {
-    constructor() {
-      let geometry = new T.BufferGeometry();
-      //
-      // while the two triangles have 4 certices, we need to split the vertices
-      // so that they can have different normals
-      const vertices = new Float32Array( [
-         -1, 1, -1,     // 1A note that we need to keep this ccw
-         0, 0, 0,       // 1B
-         0, 2, 0,       // 1C
-         
-         1, 1, -1,      // second triangle
-         0, 2, 0,       // 2B
-         0, 0, 0        // 2C
-      ]);
-      geometry.setAttribute('position',new T.BufferAttribute(vertices,3));
-      geometry.computeVertexNormals();
-
-      // load the texture and assign it to the material
-      let material = new T.MeshStandardMaterial({
-        color: "white",
-        roughness: 0.75
-      });
-
-      let mesh = new T.Mesh(geometry, material);
-  
-      //
-      super("TwoTrianglesBG", mesh);
-    }
+class TwoTriangles extends GrObject {
+  constructor() {
+    let geometry = new Geom.Geometry();
+    //
+    geometry.vertices.push(new T.Vector3(-1, 1, -1));
+    geometry.vertices.push(new T.Vector3(0, 0, 0));
+    geometry.vertices.push(new T.Vector3(0, 2, 0));
+    geometry.vertices.push(new T.Vector3(1, 1, -1));
+    //
+    let f1 = new Geom.Face3(0, 1, 2);
+    geometry.faces.push(f1);
+    let f2 = new Geom.Face3(1, 3, 2);
+    geometry.faces.push(f2);
+    geometry.computeFaceNormals();
+    //
+    let material = new T.MeshStandardMaterial({
+      color: "white",
+      roughness: 0.75
+    });
+    let bg = geometry.toBufferGeometry();
+    let mesh = new T.Mesh(bg, material);
+    super("TwoTriangles1", mesh);
   }
-  
-/**
- * this only adds the textures...
- */
-class TwoTexturedTrianglesBG extends GrObject {
-    constructor() {
-      let geometry = new T.BufferGeometry();
-      //
-      // while the two triangles have 4 certices, we need to split the vertices
-      // so that they can have different normals
-      const vertices = new Float32Array( [
-         -1, 1, -1,     // 1A note that we need to keep this ccw
-         0, 0, 0,       // 1B
-         0, 2, 0,       // 1C
-         
-         1, 1, -1,      // second triangle
-         0, 2, 0,       // 2B
-         0, 0, 0        // 2C
-      ]);
-      geometry.setAttribute('position',new T.BufferAttribute(vertices,3));
-      geometry.computeVertexNormals();
-      // give it UVs
-      // @@Snippet:texcoords
-      const uvs = new Float32Array( [
-        0,0,
-        1,0,
-        0,1,        
-        1,1,
-        0,1,
-        1,0
-      ]);
-      geometry.setAttribute('uv',new T.BufferAttribute(uvs,2));
-      //@@Snippet:end
-
-      // @@Snippet:texuse
-      let tl = new T.TextureLoader().load("../textures/UV_Grid_Sm.jpg");
-      let material = new T.MeshStandardMaterial({
-        color: "white",
-        roughness: 0.75,
-        map: tl
-      });
-      // @@Snippet:end
-      //
-      let mesh = new T.Mesh(geometry, material);
-      //
-      super("TwoTrianglesBG2", mesh);
-    }
 }
 
-/**
- * this is the same, but with different texture coordss
- */
-class TwoTexturedTrianglesBG2 extends GrObject {
-    constructor() {
-        let geometry = new T.BufferGeometry();
-        //
-        // while the two triangles have 4 certices, we need to split the vertices
-        // so that they can have different normals
-        const vertices = new Float32Array( [
-            -1, 1, -1,     // 1A note that we need to keep this ccw
-            0, 0, 0,       // 1B
-            0, 2, 0,       // 1C
-            
-            1, 1, -1,      // second triangle
-            0, 2, 0,       // 2B
-            0, 0, 0        // 2C
-        ]);
-        geometry.setAttribute('position',new T.BufferAttribute(vertices,3));
-        geometry.computeVertexNormals();
-        // give it UVs
-        const uvs = new Float32Array( [
-        0,0,
-        .5,0,
-        0,.5,
-        1,1,
-        0,.75,
-        .75,0
-        ]);
-        geometry.setAttribute('uv',new T.BufferAttribute(uvs,2));
+class TwoTrianglesTextured extends GrObject {
+  constructor() {
+    let geometry = new Geom.Geometry();
+    //
+    geometry.vertices.push(new T.Vector3(-1, 1, -1));
+    geometry.vertices.push(new T.Vector3(0, 0, 0));
+    geometry.vertices.push(new T.Vector3(0, 2, 0));
+    geometry.vertices.push(new T.Vector3(1, 1, -1));
+    //
+// @@Snippet:texcoords
+    let f1 = new Geom.Face3(0, 1, 2);
+    geometry.faceVertexUvs = [[]];
+    geometry.faces.push(f1);
+    geometry.faceVertexUvs[0].push([
+      new T.Vector2(0, 0),
+      new T.Vector2(1, 0),
+      new T.Vector2(0, 1)
+    ]);
+// @@Snippet:end
+    let f2 = new Geom.Face3(1, 3, 2);
+    geometry.faces.push(f2);
+    geometry.faceVertexUvs[0].push([
+      new T.Vector2(1, 0),
+      new T.Vector2(1, 1),
+      new T.Vector2(0, 1)
+    ]);
+    geometry.computeFaceNormals();
+    geometry.uvsNeedUpdate = true;
+    //
 
-        let tl = new T.TextureLoader().load("../textures/UV_Grid_Sm.jpg");
-        let material = new T.MeshStandardMaterial({
-        color: "white",
-        roughness: 0.75,
-        map: tl
-        });
-        //
-        let mesh = new T.Mesh(geometry, material);
-        //
-        super("TwoTrianglesBG3", mesh);
-    }
+    let tl = new T.TextureLoader().load("../textures/UV_Grid_Sm.jpg");
+    let material = new T.MeshStandardMaterial({ map: tl, roughness: 0.75 });
+    let bg = geometry.toBufferGeometry();
+    let mesh = new T.Mesh(bg, material);
+    super("TwoTriangles2", mesh);
+  }
 }
 
+class TwoTrianglesTextured2 extends GrObject {
+  constructor() {
+    let geometry = new Geom.Geometry();
+    //
+    geometry.vertices.push(new T.Vector3(-1, 1, -1));
+    geometry.vertices.push(new T.Vector3(0, 0, 0));
+    geometry.vertices.push(new T.Vector3(0, 2, 0));
+    geometry.vertices.push(new T.Vector3(1, 1, -1));
+    //
+    geometry.faceVertexUvs = [[]];
+    let f1 = new Geom.Face3(0, 1, 2);
+    geometry.faces.push(f1);
+    geometry.faceVertexUvs[0].push([
+      new T.Vector2(0, 0),
+      new T.Vector2(0.5, 0),
+      new T.Vector2(0, 0.5)
+    ]);
+    let f2 = new Geom.Face3(1, 3, 2);
+    geometry.faces.push(f2);
+    geometry.faceVertexUvs[0].push([
+      new T.Vector2(1, 1),
+      new T.Vector2(0.5, 1),
+      new T.Vector2(1, 0.5)
+    ]);
+    geometry.computeFaceNormals();
+    geometry.uvsNeedUpdate = true;
+    //
+
+    let tl = new T.TextureLoader().load("../textures/UV_Grid_Sm.jpg");
+    let material = new T.MeshStandardMaterial({ map: tl, roughness: 0.75 });
+    let bg = geometry.toBufferGeometry();
+    let mesh = new T.Mesh(bg, material);
+    super("TwoTriangles3", mesh);
+  }
+}
 
 function shift(grobj, x) {
   grobj.objects[0].translateX(x);
@@ -149,11 +124,11 @@ InputHelpers.makeHead("Texture Test", box);
 
 let world = new GrWorld({ width: mydiv ? 600 : 800, where: box });
 
-let tt = shift(new TwoTrianglesBG(), -3);
+let tt = shift(new TwoTriangles(), -3);
 world.add(tt);
-let t2 = shift(new TwoTexturedTrianglesBG(), 0);
+let t2 = shift(new TwoTrianglesTextured(), 0);
 world.add(t2);
-let t3 = shift(new TwoTexturedTrianglesBG2(), 3);
+let t3 = shift(new TwoTrianglesTextured2(), 3);
 world.add(t3);
 
 let div = InputHelpers.makeBoxDiv({}, box);
